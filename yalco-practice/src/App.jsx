@@ -1,32 +1,30 @@
 import './App.css'
-import { useState } from 'react'
-import TempInput from './TempInput'
-import UnitSelector from './UnitSelector'
+import React, { useReducer } from 'react'
+import { userReducer, initialState }
+ from './reducers/userReducer'
 
-const App = () => {
-  const [temperature, setTemperature] = useState("")
-  const [unit, setUnit] = useState("Celsius")
-
-  const convertedTemp = unit === "Celsius"
-    ? (temperature * 9/5 + 32).toFixed(1)
-    : ((temperature - 32) * 5/9).toFixed(1)
+function App() {
+  const [state, dispatch]
+   = useReducer(userReducer, initialState)
 
   return (
     <div>
-      <h2>Temperature Converter</h2>
-      <p>
-        Converted: {temperature ? convertedTemp : "--"} 
-        {unit === "Celsius" ? "°F" : "°C"}
-      </p>
-      <TempInput
-        value={temperature}
-        unit={unit}
-        onChange={setTemperature}
+      <input
+        type="text" placeholder="Enter name"
+        value={state.name}
+        onChange={(e) => dispatch({ 
+          type: 'SET_NAME',  payload: e.target.value })}
       />
-      <UnitSelector
-        unit={unit}
-        onUnitChange={setUnit}
+      <input
+        type="number" placeholder="Enter birth year"
+        value={state.year}
+        onChange={(e) => dispatch({ 
+          type: 'SET_YEAR', payload: e.target.value })}
       />
+      {state.warning
+       && <p style={{ color: 'red' }}>{state.warning}</p>}
+      <p>Name: {state.name}</p>
+      <p>Year: {state.year}</p>
     </div>
   )
 }
